@@ -1,4 +1,26 @@
-import { motion } from 'motion/react';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, useSpring } from 'motion/react';
+import Lenis from 'lenis';
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: 'blur(0px)',
+    transition: { type: 'spring', stiffness: 80, damping: 20, mass: 1 }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15
+    }
+  }
+};
 
 const services = [
   {
@@ -157,78 +179,179 @@ const Logo = ({ light = false }: { light?: boolean }) => {
 };
 
 export default function App() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  
+  const { scrollYProgress: pageScroll } = useScroll();
+  const scaleX = useSpring(pageScroll, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.08, // Smoother, more modern interpolation
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20">
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-primary origin-left z-[100]"
+        style={{ scaleX }}
+      />
+
       {/* Navigation */}
-      <nav className="border-b border-border bg-surface/90 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo />
+      <nav className="absolute top-0 left-0 w-full z-50 border-b border-white/10 bg-transparent">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <Logo light={true} />
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-text-muted">
-            <a href="#services" className="hover:text-primary transition-colors">Services</a>
-            <a href="#realisations" className="hover:text-primary transition-colors">Réalisations</a>
-            <a href="#testimonials" className="hover:text-primary transition-colors">Témoignages</a>
-            <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
+            <a href="#services" className="hover:text-white transition-colors">Services</a>
+            <a href="#realisations" className="hover:text-white transition-colors">Réalisations</a>
+            <a href="#testimonials" className="hover:text-white transition-colors">Témoignages</a>
+            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
           </div>
           
-          <button className="bg-primary text-white px-6 py-2.5 rounded-md font-medium text-sm hover:bg-text-main transition-colors">
-            Démarrer
+          <button 
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            className="bg-[#00B4D8] text-white px-6 py-2.5 rounded-md font-medium text-sm hover:bg-[#0096B4] transition-colors"
+          >
+            Réserver un appel
           </button>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-24 px-6 text-center max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="inline-block py-1 px-3 rounded-full bg-background border border-border text-sm font-medium text-text-muted mb-6">
-            Agence Digitale basée au Bénin
-          </span>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6 text-text-main">
-            Boostez Votre <br />
-            <span className="text-gradient">Présence Digitale</span>
-          </h1>
-          <p className="text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-            Nous accompagnons les entreprises ambitieuses dans la création de sites web professionnels, le marketing basé sur les données et la croissance de leur présence numérique.
-          </p>
+      <section ref={heroRef} className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-[#111] pt-20">
+        {/* Background Image with heavy blur and dark overlay */}
+        <div className="absolute inset-0 z-0">
+          <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
+            <img 
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
+              alt="Équipe de l'agence digitale Strateek au Bénin travaillant sur un projet web" 
+              className="w-full h-full object-cover opacity-40 blur-md scale-105"
+              referrerPolicy="no-referrer"
+            />
+          </motion.div>
+          {/* Dark gradient overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-black/50"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-[#111]"></div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center flex flex-col items-center mt-12 mb-32">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white text-sm font-medium mb-8"
+          >
+            <svg className="w-4 h-4 text-[#00B4D8]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            4.9/5 par plus de 50 clients satisfaits
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white mb-6"
+          >
+            L'Agence Digitale au Bénin <br className="hidden md:block" />
+            qui Propulse Votre Croissance
+          </motion.h1>
+
+          {/* Subheadline */}
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
+          >
+            <strong>Strateek</strong> est votre partenaire stratégique pour la <strong>création de sites web</strong> performants, le <strong>référencement SEO</strong> et le <strong>marketing digital</strong>. Nous transformons votre présence en ligne en un véritable moteur d'acquisition.
+          </motion.p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <button className="w-full sm:w-auto px-8 py-3.5 bg-primary text-white rounded-md font-medium text-base hover:bg-text-main transition-colors flex items-center justify-center gap-2">
-              Démarrer un Projet
-              <ArrowRightIcon />
+          {/* CTA Button */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <button 
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-4 bg-[#00B4D8] text-white rounded-lg font-medium text-base hover:bg-[#0096B4] transition-colors shadow-lg shadow-[#00B4D8]/20"
+            >
+              Démarrer mon projet
             </button>
-            <button className="w-full sm:w-auto px-8 py-3.5 bg-surface text-text-main border border-border rounded-md font-medium text-base hover:bg-background transition-colors">
-              Voir Nos Services
-            </button>
+          </motion.div>
+        </div>
+
+        {/* Bottom Logo Ticker */}
+        <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-black/20 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-center md:justify-between gap-8 opacity-50 grayscale">
+            <div className="text-white font-bold text-xl tracking-widest">E-COMMERCE</div>
+            <div className="hidden md:block w-px h-8 bg-white/20"></div>
+            <div className="text-white font-bold text-xl tracking-widest">STARTUPS</div>
+            <div className="hidden md:block w-px h-8 bg-white/20"></div>
+            <div className="text-white font-bold text-xl tracking-widest">IMMOBILIER</div>
+            <div className="hidden md:block w-px h-8 bg-white/20"></div>
+            <div className="text-white font-bold text-xl tracking-widest">FINANCE</div>
+            <div className="hidden md:block w-px h-8 bg-white/20"></div>
+            <div className="text-white font-bold text-xl tracking-widest">INSTITUTIONS</div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Services Section */}
       <section id="services" className="py-24 px-6 bg-surface border-y border-border">
         <div className="max-w-5xl mx-auto">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-text-main">Nos Services</h2>
             <p className="text-text-muted max-w-2xl mx-auto">Des solutions digitales complètes conçues pour élever votre marque et générer des résultats mesurables.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {services.map((service, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variants={fadeInUp}
                 className="bg-background p-8 rounded-xl border border-border shadow-pro hover:border-primary/30 transition-colors group"
               >
                 {/* Minimalist accent line instead of heavy icons */}
@@ -239,7 +362,7 @@ export default function App() {
                 </p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -247,27 +370,30 @@ export default function App() {
       <section id="realisations" className="py-24 px-6 bg-background">
         <div className="max-w-5xl mx-auto">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold mb-4 text-text-main">Nos Réalisations</h2>
             <p className="text-text-muted">Découvrez quelques-uns de nos projets récents et succès clients.</p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
             {realisations.map((item, index) => (
               <motion.a
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                variants={fadeInUp}
                 className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm block cursor-pointer hover:border-primary/50 transition-colors"
               >
                 <div className="aspect-video w-full overflow-hidden relative">
@@ -290,7 +416,7 @@ export default function App() {
                 </div>
               </motion.a>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -298,10 +424,10 @@ export default function App() {
       <section id="testimonials" className="py-24 bg-surface border-y border-border overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 mb-16">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center"
           >
             <h2 className="text-4xl font-bold mb-4 text-text-main">Ce qu'on dit de nous</h2>
@@ -336,10 +462,10 @@ export default function App() {
       <section id="contact" className="py-24 px-6 bg-surface border-t border-border">
         <div className="max-w-3xl mx-auto">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-12"
           >
             <h2 className="text-4xl font-bold mb-4 text-text-main">Travaillons Ensemble</h2>
@@ -347,72 +473,92 @@ export default function App() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
             className="bg-background p-8 md:p-12 rounded-xl border border-border"
           >
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isSubmitted ? (
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <h3 className="text-2xl font-bold text-text-main mb-2">Message envoyé !</h3>
+                <p className="text-text-muted">Merci de nous avoir contactés. Notre équipe vous répondra dans les plus brefs délais.</p>
+                <button 
+                  onClick={() => setIsSubmitted(false)}
+                  className="mt-8 px-6 py-2 border border-border rounded-md text-text-main hover:bg-surface transition-colors"
+                >
+                  Envoyer un autre message
+                </button>
+              </div>
+            ) : (
+              <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsSubmitted(true); }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-main">Prénom</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="Jean"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-main">Nom</label>
+                    <input 
+                      type="text" 
+                      required
+                      className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                      placeholder="Dupont"
+                    />
+                  </div>
+                </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-text-main">Prénom</label>
+                  <label className="text-sm font-medium text-text-main">Adresse Email</label>
                   <input 
-                    type="text" 
+                    type="email" 
+                    required
                     className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                    placeholder="Jean"
+                    placeholder="jean@entreprise.com"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-text-main">Nom</label>
-                  <input 
-                    type="text" 
-                    className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                    placeholder="Dupont"
+                  <label className="text-sm font-medium text-text-main">Comment pouvons-nous vous aider ?</label>
+                  <textarea 
+                    required
+                    className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none h-32"
+                    placeholder="Parlez-nous des objectifs de votre projet..."
                   />
                 </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-main">Adresse Email</label>
-                <input 
-                  type="email" 
-                  className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
-                  placeholder="jean@entreprise.com"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-text-main">Comment pouvons-nous vous aider ?</label>
-                <textarea 
-                  className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none h-32"
-                  placeholder="Parlez-nous des objectifs de votre projet..."
-                />
-              </div>
-              <button className="w-full bg-primary text-white py-3.5 rounded-md font-medium text-base hover:bg-text-main transition-colors">
-                Envoyer le Message
-              </button>
-            </form>
+                <button type="submit" className="w-full bg-primary text-white py-3.5 rounded-md font-medium text-base hover:bg-text-main transition-colors">
+                  Envoyer le Message
+                </button>
+              </form>
+            )}
           </motion.div>
 
           {/* Contact Info Grid */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
             className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 text-left"
           >
-            <div>
+            <motion.div variants={fadeInUp}>
               <div className="text-sm text-text-muted mb-1">Email</div>
               <a href="mailto:hello@strateek.com" className="text-primary font-medium hover:underline">hello@strateek.com</a>
-            </div>
-            <div>
+            </motion.div>
+            <motion.div variants={fadeInUp}>
               <div className="text-sm text-text-muted mb-1">Téléphone</div>
-              <a href="tel:+22961234567" className="text-primary font-medium hover:underline">+229 61 23 45 67</a>
-            </div>
-            <div>
+              <a href="tel:+2290157878794" className="text-primary font-medium hover:underline">+229 01 57 87 87 94</a>
+            </motion.div>
+            <motion.div variants={fadeInUp}>
               <div className="text-sm text-text-muted mb-1">Localisation</div>
               <div className="text-text-main font-medium">Cotonou, Bénin</div>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
