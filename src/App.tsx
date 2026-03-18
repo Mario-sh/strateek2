@@ -537,14 +537,15 @@ export default function App() {
                 rel="noopener noreferrer"
                 key={index}
                 variants={fadeInUp}
-                className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm block cursor-pointer hover:border-primary/50 transition-colors"
+                className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm flex flex-col cursor-pointer hover:border-primary/50 transition-colors transform-gpu"
+                style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
               >
-                <div className="relative w-full pt-[56.25%] overflow-hidden">
+                <div className="w-full aspect-video overflow-hidden bg-black/5 relative isolate transform-gpu">
                   <img 
                     src={item.image} 
                     alt={item.title} 
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 transform-gpu"
+                    loading="lazy"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <span className="text-white font-medium flex items-center gap-2 bg-black/50 px-4 py-2 rounded-full backdrop-blur-sm">
@@ -590,17 +591,18 @@ export default function App() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] bg-surface rounded-xl overflow-hidden border border-border hover:border-primary/50 transition-colors group"
+                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] flex flex-col bg-surface rounded-xl overflow-hidden border border-border hover:border-primary/50 transition-colors group transform-gpu"
+                style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
               >
-                <div className="relative w-full pt-[100%] overflow-hidden">
+                <div className="w-full aspect-square overflow-hidden bg-black/5 relative isolate transform-gpu">
                   <img
                     src={member.image}
                     alt={member.name}
-                    referrerPolicy="no-referrer"
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 transform-gpu"
+                    loading="lazy"
                   />
                 </div>
-                <div className="p-6 text-center">
+                <div className="p-6 text-center flex-grow">
                   <h3 className="text-xl font-bold text-text-main mb-1">{member.name}</h3>
                   <p className="text-primary font-medium text-sm mb-3">{member.role}</p>
                   <p className="text-text-muted text-sm">{member.description}</p>
