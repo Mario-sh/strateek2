@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://strateek-digitalagency.onrender.com/sitemap.xml
