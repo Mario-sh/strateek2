@@ -132,6 +132,39 @@ const testimonials = [
   }
 ];
 
+const teamMembers = [
+  {
+    name: 'TOTO HINCHEGNON Brunel Junior',
+    role: 'CEO de STRATEEK',
+    image: '/images/ceo.jpg',
+    description: 'Visionnaire et stratège, il guide Strateek vers de nouveaux horizons.'
+  },
+  {
+    name: 'SAKITI EUSTACHE PATERNE M.',
+    role: 'Directeur technique, Développeur full et IA',
+    image: '/images/mem2.jpg',
+    description: 'Expert en développement full-stack et intelligence artificielle, il conçoit des solutions technologiques robustes et innovantes.'
+  },
+  {
+    name: 'SODOKIN Candide',
+    role: 'Directeur artistique, Dev full, designer graphiste',
+    image: '/images/mem3.jpg',
+    description: 'Alliant créativité et expertise technique, il donne vie à des interfaces esthétiques et performantes.'
+  },
+  {
+    name: 'CHITOU Mahmoud',
+    role: 'Directeur artistique assistant, Designer graphiste, monteur vidéo',
+    image: '/images/mem4.jpg',
+    description: 'Créatif polyvalent, il sublime l\'identité visuelle et donne vie aux contenus multimédias.'
+  },
+  {
+    name: 'HOUNMENOU Charles',
+    role: 'Directeur marketing et communication, Chargé de marketing et communication',
+    image: '/images/mem5.jpg',
+    description: 'Expert en stratégies de marque, il élabore et déploie des campagnes percutantes pour accroître la visibilité et l\'engagement.'
+  }
+];
+
 // Simple SVG Arrow to avoid heavy icon libraries
 const ArrowRightIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -181,8 +214,34 @@ const Logo = ({ light = false }: { light?: boolean }) => {
 
 export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const formData = new FormData(e.currentTarget);
+    
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/strateekbj@gmail.com", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (response.ok) {
+        setIsSubmitted(true);
+      } else {
+        alert("Une erreur s'est produite. Veuillez réessayer.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Une erreur s'est produite. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -243,6 +302,7 @@ export default function App() {
           <div className={`hidden md:flex items-center gap-8 text-sm font-medium ${isScrolled ? 'text-text-main' : 'text-white/80'}`}>
             <a href="#services" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Services</a>
             <a href="#realisations" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Réalisations</a>
+            <a href="#equipe" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Équipe</a>
             <a href="#testimonials" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Témoignages</a>
             <a href="#contact" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Contact</a>
           </div>
@@ -289,6 +349,13 @@ export default function App() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Réalisations
+              </a>
+              <a 
+                href="#equipe" 
+                className="border-b border-gray-100 pb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Équipe
               </a>
               <a 
                 href="#testimonials" 
@@ -495,6 +562,54 @@ export default function App() {
         </div>
       </section>
 
+      {/* Team Section */}
+      <section id="equipe" className="py-24 px-6 bg-background border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-bold mb-4 text-text-main">Notre Équipe</h2>
+            <p className="text-text-muted max-w-2xl mx-auto">
+              Découvrez les 5 experts passionnés à la tête de Strateek, dédiés à la réussite de vos projets.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            className="flex flex-wrap justify-center gap-8"
+          >
+            {teamMembers.map((member, index) => (
+              <motion.div
+                key={index}
+                variants={fadeInUp}
+                className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] bg-surface rounded-xl overflow-hidden border border-border hover:border-primary/50 transition-colors group"
+              >
+                <div className="aspect-square overflow-hidden relative">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <div className="p-6 text-center">
+                  <h3 className="text-xl font-bold text-text-main mb-1">{member.name}</h3>
+                  <p className="text-primary font-medium text-sm mb-3">{member.role}</p>
+                  <p className="text-text-muted text-sm">{member.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
       {/* Testimonials Section (Matching User Screenshot) */}
       <section id="testimonials" className="py-24 bg-surface border-y border-border overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 mb-16">
@@ -569,12 +684,19 @@ export default function App() {
                 </button>
               </div>
             ) : (
-              <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsSubmitted(true); }}>
+              <form className="space-y-6" onSubmit={handleSubmit}>
+                {/* Anti-spam honeypot */}
+                <input type="text" name="_honey" style={{ display: 'none' }} />
+                {/* Disable captcha for better UX */}
+                <input type="hidden" name="_captcha" value="false" />
+                {/* Success page redirection disabled since we use AJAX */}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-text-main">Prénom</label>
                     <input 
                       type="text" 
+                      name="prenom"
                       required
                       className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                       placeholder="Jean"
@@ -584,6 +706,7 @@ export default function App() {
                     <label className="text-sm font-medium text-text-main">Nom</label>
                     <input 
                       type="text" 
+                      name="nom"
                       required
                       className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                       placeholder="Dupont"
@@ -594,6 +717,7 @@ export default function App() {
                   <label className="text-sm font-medium text-text-main">Adresse Email</label>
                   <input 
                     type="email" 
+                    name="email"
                     required
                     className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     placeholder="jean@entreprise.com"
@@ -602,13 +726,28 @@ export default function App() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-text-main">Comment pouvons-nous vous aider ?</label>
                   <textarea 
+                    name="message"
                     required
                     className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none h-32"
                     placeholder="Parlez-nous des objectifs de votre projet..."
                   />
                 </div>
-                <button type="submit" className="w-full bg-primary text-white py-3.5 rounded-md font-medium text-base hover:bg-text-main transition-colors">
-                  Envoyer le Message
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className={`w-full bg-primary text-white py-3.5 rounded-md font-medium text-base transition-colors flex justify-center items-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-text-main'}`}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Envoi en cours...
+                    </>
+                  ) : (
+                    "Envoyer le Message"
+                  )}
                 </button>
               </form>
             )}
