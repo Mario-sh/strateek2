@@ -137,31 +137,31 @@ const teamMembers = [
   {
     name: 'TOTO HINCHEGNON Brunel Junior',
     role: 'CEO de STRATEEK',
-    image: '/images/ceo.jpg',
+    image: '/images/ceo.jpeg',
     description: 'Visionnaire et stratège, il guide Strateek vers de nouveaux horizons.'
   },
   {
     name: 'SAKITI EUSTACHE PATERNE M.',
     role: 'Directeur technique, Développeur full et IA',
-    image: '/images/mem2.jpg',
+    image: '/images/mem2.jpeg',
     description: 'Expert en développement full-stack et intelligence artificielle, il conçoit des solutions technologiques robustes et innovantes.'
   },
   {
     name: 'SODOKIN Candide',
     role: 'Directeur artistique, Dev full, designer graphiste',
-    image: '/images/mem3.jpg',
+    image: '/images/mem3.jpeg',
     description: 'Alliant créativité et expertise technique, il donne vie à des interfaces esthétiques et performantes.'
   },
   {
     name: 'CHITOU Mahmoud',
     role: 'Directeur artistique assistant, Designer graphiste, monteur vidéo',
-    image: '/images/mem4.jpg',
+    image: '/images/mem4.jpeg',
     description: 'Créatif polyvalent, il sublime l\'identité visuelle et donne vie aux contenus multimédias.'
   },
   {
     name: 'HOUNMENOU Charles',
     role: 'Directeur marketing et communication, Chargé de marketing et communication',
-    image: '/images/mem5.jpg',
+    image: '/images/mem5.jpeg',
     description: 'Expert en stratégies de marque, il élabore et déploie des campagnes percutantes pour accroître la visibilité et l\'engagement.'
   }
 ];
