@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'motion/react';
+import { Menu, X } from 'lucide-react';
 import Lenis from 'lenis';
 
 const fadeInUp = {
@@ -180,6 +181,8 @@ const Logo = ({ light = false }: { light?: boolean }) => {
 
 export default function App() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -193,6 +196,14 @@ export default function App() {
     damping: 30,
     restDelta: 0.001
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -225,28 +236,92 @@ export default function App() {
       />
 
       {/* Navigation */}
-      <nav className="absolute top-0 left-0 w-full z-50 border-b border-white/10 bg-transparent">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <Logo light={true} />
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm py-2' : 'bg-transparent border-b border-white/10 py-4'}`}>
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Logo light={!isScrolled} />
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/80">
-            <a href="#services" className="hover:text-white transition-colors">Services</a>
-            <a href="#realisations" className="hover:text-white transition-colors">Réalisations</a>
-            <a href="#testimonials" className="hover:text-white transition-colors">Témoignages</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+          <div className={`hidden md:flex items-center gap-8 text-sm font-medium ${isScrolled ? 'text-text-main' : 'text-white/80'}`}>
+            <a href="#services" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Services</a>
+            <a href="#realisations" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Réalisations</a>
+            <a href="#testimonials" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Témoignages</a>
+            <a href="#contact" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Contact</a>
           </div>
           
-          <button 
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-[#00B4D8] text-white px-6 py-2.5 rounded-md font-medium text-sm hover:bg-[#0096B4] transition-colors"
-          >
-            Réserver un appel
-          </button>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+              className="hidden md:block bg-[#0066ff] text-white px-6 py-2.5 rounded-md font-medium text-sm hover:bg-[#0052cc] transition-colors"
+            >
+              Réserver un appel
+            </button>
+            <button 
+              className={`md:hidden p-2 -mr-2 rounded-md transition-colors ${isScrolled ? 'text-text-main hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </nav>
 
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 bg-white pt-24 px-6 pb-6 flex flex-col md:hidden overflow-y-auto"
+          >
+            <div className="flex flex-col gap-6 text-lg font-medium text-text-main">
+              <a 
+                href="#services" 
+                className="border-b border-gray-100 pb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Services
+              </a>
+              <a 
+                href="#realisations" 
+                className="border-b border-gray-100 pb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Réalisations
+              </a>
+              <a 
+                href="#testimonials" 
+                className="border-b border-gray-100 pb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Témoignages
+              </a>
+              <a 
+                href="#contact" 
+                className="border-b border-gray-100 pb-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </a>
+              <button 
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setTimeout(() => {
+                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }}
+                className="mt-4 bg-[#0066ff] text-white px-6 py-4 rounded-md font-medium text-center hover:bg-[#0052cc] transition-colors shadow-lg shadow-[#0066ff]/20"
+              >
+                Réserver un appel
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <section ref={heroRef} className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden bg-[#111] pt-20">
+      <section ref={heroRef} className="relative flex flex-col items-center justify-center min-h-[100svh] overflow-hidden bg-[#111] pt-24 pb-16 px-4">
         {/* Background Image with heavy blur and dark overlay */}
         <div className="absolute inset-0 z-0">
           <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
@@ -280,7 +355,7 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white mb-6"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white mb-6"
           >
             L'Agence Digitale au Bénin <br className="hidden md:block" />
             qui Propulse Votre Croissance
@@ -291,7 +366,7 @@ export default function App() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             <strong>Strateek</strong> est votre partenaire stratégique pour la <strong>création de sites web</strong> performants, le <strong>référencement SEO</strong> et le <strong>marketing digital</strong>. Nous transformons votre présence en ligne en un véritable moteur d'acquisition.
           </motion.p>
@@ -304,7 +379,7 @@ export default function App() {
           >
             <button 
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-4 bg-[#00B4D8] text-white rounded-lg font-medium text-base hover:bg-[#0096B4] transition-colors shadow-lg shadow-[#00B4D8]/20"
+              className="px-8 py-4 bg-[#0066ff] text-white rounded-lg font-medium text-base hover:bg-[#0052cc] transition-colors shadow-lg shadow-[#0066ff]/20"
             >
               Démarrer mon projet
             </button>
@@ -312,17 +387,17 @@ export default function App() {
         </div>
 
         {/* Bottom Logo Ticker */}
-        <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-black/20 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-6 py-6 flex flex-wrap items-center justify-center md:justify-between gap-8 opacity-50 grayscale">
-            <div className="text-white font-bold text-xl tracking-widest">E-COMMERCE</div>
+        <div className="absolute bottom-0 left-0 w-full border-t border-white/10 bg-black/20 backdrop-blur-md overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 py-4 md:py-6 flex flex-wrap items-center justify-center md:justify-between gap-4 md:gap-8 opacity-50 grayscale">
+            <div className="text-white font-bold text-sm md:text-xl tracking-widest">E-COMMERCE</div>
             <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="text-white font-bold text-xl tracking-widest">STARTUPS</div>
+            <div className="text-white font-bold text-sm md:text-xl tracking-widest">STARTUPS</div>
             <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="text-white font-bold text-xl tracking-widest">IMMOBILIER</div>
+            <div className="text-white font-bold text-sm md:text-xl tracking-widest">IMMOBILIER</div>
             <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="text-white font-bold text-xl tracking-widest">FINANCE</div>
+            <div className="text-white font-bold text-sm md:text-xl tracking-widest">FINANCE</div>
             <div className="hidden md:block w-px h-8 bg-white/20"></div>
-            <div className="text-white font-bold text-xl tracking-widest">INSTITUTIONS</div>
+            <div className="text-white font-bold text-sm md:text-xl tracking-widest hidden sm:block">INSTITUTIONS</div>
           </div>
         </div>
       </section>
@@ -549,7 +624,7 @@ export default function App() {
           >
             <motion.div variants={fadeInUp}>
               <div className="text-sm text-text-muted mb-1">Email</div>
-              <a href="mailto:hello@strateek.com" className="text-primary font-medium hover:underline">hello@strateek.com</a>
+              <a href="mailto:strateekbj@gmail.com" className="text-primary font-medium hover:underline">strateekbj@gmail.com</a>
             </motion.div>
             <motion.div variants={fadeInUp}>
               <div className="text-sm text-text-muted mb-1">Téléphone</div>
