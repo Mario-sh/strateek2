@@ -539,11 +539,11 @@ export default function App() {
                 variants={fadeInUp}
                 className="group relative overflow-hidden rounded-xl border border-border bg-surface shadow-sm block cursor-pointer hover:border-primary/50 transition-colors"
               >
-                <div className="aspect-video w-full overflow-hidden relative">
+                <div className="relative w-full pt-[56.25%] overflow-hidden">
                   <img 
                     src={item.image} 
                     alt={item.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -592,12 +592,12 @@ export default function App() {
                 variants={fadeInUp}
                 className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.33rem)] bg-surface rounded-xl overflow-hidden border border-border hover:border-primary/50 transition-colors group"
               >
-                <div className="aspect-square overflow-hidden relative">
+                <div className="relative w-full pt-[100%] overflow-hidden">
                   <img
                     src={member.image}
                     alt={member.name}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-6 text-center">
