@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'motion/react';
 import { Menu, X } from 'lucide-react';
 import Lenis from 'lenis';
@@ -6,9 +6,9 @@ import Chatbot from './components/Chatbot';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    y: 0,
     filter: 'blur(0px)',
     transition: { type: 'spring', stiffness: 80, damping: 20, mass: 1 }
   }
@@ -137,31 +137,31 @@ const teamMembers = [
   {
     name: 'TOTO HINCHEGNON Brunel Junior',
     role: 'CEO de STRATEEK',
-    image: '/images/ceo.jpeg',
+    image: '/images/ceo.jpg',
     description: 'Visionnaire et stratège, il guide Strateek vers de nouveaux horizons.'
   },
   {
     name: 'SAKITI EUSTACHE PATERNE M.',
     role: 'Directeur technique, Développeur full et IA',
-    image: '/images/mem2.jpeg',
+    image: '/images/mem2.jpg',
     description: 'Expert en développement full-stack et intelligence artificielle, il conçoit des solutions technologiques robustes et innovantes.'
   },
   {
     name: 'SODOKIN Candide',
     role: 'Directeur artistique, Dev full, designer graphiste',
-    image: '/images/mem3.jpeg',
+    image: '/images/mem3.jpg',
     description: 'Alliant créativité et expertise technique, il donne vie à des interfaces esthétiques et performantes.'
   },
   {
     name: 'CHITOU Mahmoud',
     role: 'Directeur artistique assistant, Designer graphiste, monteur vidéo',
-    image: '/images/mem4.jpeg',
+    image: '/images/mem4.jpg',
     description: 'Créatif polyvalent, il sublime l\'identité visuelle et donne vie aux contenus multimédias.'
   },
   {
     name: 'HOUNMENOU Charles',
     role: 'Directeur marketing et communication, Chargé de marketing et communication',
-    image: '/images/mem5.jpeg',
+    image: '/images/mem5.jpg',
     description: 'Expert en stratégies de marque, il élabore et déploie des campagnes percutantes pour accroître la visibilité et l\'engagement.'
   }
 ];
@@ -169,7 +169,7 @@ const teamMembers = [
 // Simple SVG Arrow to avoid heavy icon libraries
 const ArrowRightIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M5 12h14M12 5l7 7-7 7"/>
+    <path d="M5 12h14M12 5l7 7-7 7" />
   </svg>
 );
 
@@ -185,23 +185,23 @@ const Logo = ({ light = false }: { light?: boolean }) => {
             <circle cx="72.6" cy="72.6" r="5" fill="black" />
           </mask>
         </defs>
-        
+
         <g mask={`url(#${maskId})`}>
           {/* Outer Circle (Closed as requested) */}
           <circle cx="50" cy="50" r="32" stroke="#00B4D8" strokeWidth="5" fill="none" />
-          
+
           {/* Lines from center */}
           <line x1="38" y1="50" x2="18" y2="50" stroke="#00B4D8" strokeWidth="5" />
           <line x1="58.5" y1="58.5" x2="72.6" y2="72.6" stroke="#00B4D8" strokeWidth="5" />
         </g>
-        
+
         {/* Arrow (Longer line as requested) */}
         <line x1="58.5" y1="41.5" x2="96" y2="4" stroke="#00B4D8" strokeWidth="5" strokeLinecap="round" />
         <polyline points="80 4 96 4 96 20" stroke="#00B4D8" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        
+
         {/* Inner Circle (Transparent inside) */}
         <circle cx="50" cy="50" r="12" stroke="#00B4D8" strokeWidth="5" fill="none" />
-        
+
         {/* Nodes (Transparent inside) */}
         <circle cx="18" cy="50" r="5" stroke="#00B4D8" strokeWidth="5" fill="none" />
         <circle cx="72.6" cy="72.6" r="5" stroke="#00B4D8" strokeWidth="5" fill="none" />
@@ -222,15 +222,15 @@ export default function App() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const formData = new FormData(e.currentTarget);
-    
+
     try {
       const response = await fetch("https://formsubmit.co/ajax/strateekbj@gmail.com", {
         method: "POST",
         body: formData,
       });
-      
+
       if (response.ok) {
         setIsSubmitted(true);
       } else {
@@ -249,7 +249,7 @@ export default function App() {
     offset: ["start start", "end start"]
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  
+
   const { scrollYProgress: pageScroll } = useScroll();
   const scaleX = useSpring(pageScroll, {
     stiffness: 100,
@@ -299,7 +299,7 @@ export default function App() {
       <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm py-2' : 'bg-transparent border-b border-white/10 py-4'}`}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Logo light={!isScrolled} />
-          
+
           <div className={`hidden md:flex items-center gap-8 text-sm font-medium ${isScrolled ? 'text-text-main' : 'text-white/80'}`}>
             <a href="#services" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Services</a>
             <a href="#realisations" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Réalisations</a>
@@ -307,15 +307,15 @@ export default function App() {
             <a href="#testimonials" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Témoignages</a>
             <a href="#contact" className={`transition-colors ${isScrolled ? 'hover:text-primary' : 'hover:text-white'}`}>Contact</a>
           </div>
-          
+
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="hidden md:block bg-[#0066ff] text-white px-6 py-2.5 rounded-md font-medium text-sm hover:bg-[#0052cc] transition-colors"
             >
               Réserver un appel
             </button>
-            <button 
+            <button
               className={`md:hidden p-2 -mr-2 rounded-md transition-colors ${isScrolled ? 'text-text-main hover:bg-gray-100' : 'text-white hover:bg-white/10'}`}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Toggle menu"
@@ -337,42 +337,42 @@ export default function App() {
             className="fixed inset-0 z-40 bg-white pt-24 px-6 pb-6 flex flex-col md:hidden overflow-y-auto"
           >
             <div className="flex flex-col gap-6 text-lg font-medium text-text-main">
-              <a 
-                href="#services" 
+              <a
+                href="#services"
                 className="border-b border-gray-100 pb-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Services
               </a>
-              <a 
-                href="#realisations" 
+              <a
+                href="#realisations"
                 className="border-b border-gray-100 pb-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Réalisations
               </a>
-              <a 
-                href="#equipe" 
+              <a
+                href="#equipe"
                 className="border-b border-gray-100 pb-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Équipe
               </a>
-              <a 
-                href="#testimonials" 
+              <a
+                href="#testimonials"
                 className="border-b border-gray-100 pb-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Témoignages
               </a>
-              <a 
-                href="#contact" 
+              <a
+                href="#contact"
                 className="border-b border-gray-100 pb-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
               </a>
-              <button 
+              <button
                 onClick={() => {
                   setIsMobileMenuOpen(false);
                   setTimeout(() => {
@@ -393,9 +393,9 @@ export default function App() {
         {/* Background Image with heavy blur and dark overlay */}
         <div className="absolute inset-0 z-0">
           <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
-            <img 
-              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
-              alt="Équipe de l'agence digitale Strateek au Bénin travaillant sur un projet web" 
+            <img
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"
+              alt="Équipe de l'agence digitale Strateek au Bénin travaillant sur un projet web"
               className="w-full h-full object-cover opacity-40 blur-md scale-105"
               referrerPolicy="no-referrer"
             />
@@ -414,12 +414,12 @@ export default function App() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-white text-sm font-medium mb-8"
           >
-            <svg className="w-4 h-4 text-[#00B4D8]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg className="w-4 h-4 text-[#00B4D8]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
             4.9/5 par plus de 50 clients satisfaits
           </motion.div>
 
           {/* Headline */}
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -430,7 +430,7 @@ export default function App() {
           </motion.h1>
 
           {/* Subheadline */}
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -438,14 +438,14 @@ export default function App() {
           >
             <strong>Strateek</strong> est votre partenaire stratégique pour la <strong>création de sites web</strong> performants, le <strong>référencement SEO</strong> et le <strong>marketing digital</strong>. Nous transformons votre présence en ligne en un véritable moteur d'acquisition.
           </motion.p>
-          
+
           {/* CTA Button */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <button 
+            <button
               onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-8 py-4 bg-[#0066ff] text-white rounded-lg font-medium text-base hover:bg-[#0052cc] transition-colors shadow-lg shadow-[#0066ff]/20"
             >
@@ -473,7 +473,7 @@ export default function App() {
       {/* Services Section */}
       <section id="services" className="py-24 px-6 bg-surface border-y border-border">
         <div className="max-w-5xl mx-auto">
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
@@ -484,7 +484,7 @@ export default function App() {
             <p className="text-text-muted max-w-2xl mx-auto">Des solutions digitales complètes conçues pour élever votre marque et générer des résultats mesurables.</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -512,7 +512,7 @@ export default function App() {
       {/* Realisations Section */}
       <section id="realisations" className="py-24 px-6 bg-background">
         <div className="max-w-5xl mx-auto">
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
@@ -522,8 +522,8 @@ export default function App() {
             <h2 className="text-4xl font-bold mb-4 text-text-main">Nos Réalisations</h2>
             <p className="text-text-muted">Découvrez quelques-uns de nos projets récents et succès clients.</p>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -541,9 +541,9 @@ export default function App() {
                 style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
               >
                 <div className="w-full aspect-video overflow-hidden bg-black/5 relative isolate transform-gpu">
-                  <img 
-                    src={item.image} 
-                    alt={item.title} 
+                  <img
+                    src={item.image}
+                    alt={item.title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 transform-gpu"
                     loading="lazy"
                   />
@@ -616,7 +616,7 @@ export default function App() {
       {/* Testimonials Section (Matching User Screenshot) */}
       <section id="testimonials" className="py-24 bg-surface border-y border-border overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 mb-16">
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
@@ -627,7 +627,7 @@ export default function App() {
             <p className="text-text-muted">Reconnus par des entreprises de premier plan dans divers secteurs</p>
           </motion.div>
         </div>
-          
+
         <div className="relative w-full overflow-hidden flex">
           <div className="flex w-max animate-marquee gap-6 px-3">
             {[...testimonials, ...testimonials].map((testimonial, index) => (
@@ -654,7 +654,7 @@ export default function App() {
       {/* Contact Section */}
       <section id="contact" className="py-24 px-6 bg-surface border-t border-border">
         <div className="max-w-3xl mx-auto">
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
@@ -679,7 +679,7 @@ export default function App() {
                 </div>
                 <h3 className="text-2xl font-bold text-text-main mb-2">Message envoyé !</h3>
                 <p className="text-text-muted">Merci de nous avoir contactés. Notre équipe vous répondra dans les plus brefs délais.</p>
-                <button 
+                <button
                   onClick={() => setIsSubmitted(false)}
                   className="mt-8 px-6 py-2 border border-border rounded-md text-text-main hover:bg-surface transition-colors"
                 >
@@ -693,12 +693,12 @@ export default function App() {
                 {/* Disable captcha for better UX */}
                 <input type="hidden" name="_captcha" value="false" />
                 {/* Success page redirection disabled since we use AJAX */}
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-text-main">Prénom</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="prenom"
                       required
                       className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
@@ -707,8 +707,8 @@ export default function App() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-text-main">Nom</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       name="nom"
                       required
                       className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
@@ -718,8 +718,8 @@ export default function App() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-text-main">Adresse Email</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     name="email"
                     required
                     className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
@@ -728,15 +728,15 @@ export default function App() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-text-main">Comment pouvons-nous vous aider ?</label>
-                  <textarea 
+                  <textarea
                     name="message"
                     required
                     className="w-full px-4 py-3 rounded-md border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none h-32"
                     placeholder="Parlez-nous des objectifs de votre projet..."
                   />
                 </div>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className={`w-full bg-primary text-white py-3.5 rounded-md font-medium text-base transition-colors flex justify-center items-center ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-text-main'}`}
                 >
@@ -757,7 +757,7 @@ export default function App() {
           </motion.div>
 
           {/* Contact Info Grid */}
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -792,7 +792,7 @@ export default function App() {
                 Des solutions digitales premium pour les entreprises modernes.
               </p>
             </div>
-            
+
             <div>
               <h4 className="font-bold text-white mb-4">Services</h4>
               <ul className="space-y-3 text-sm text-[#8B9BB4]">
@@ -826,7 +826,7 @@ export default function App() {
           </div>
         </div>
       </footer>
-      
+
       {/* WhatsApp Floating Button */}
       <a
         href="https://wa.me/2290157878794"
@@ -836,7 +836,7 @@ export default function App() {
         aria-label="Contactez-nous sur WhatsApp"
       >
         <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
         </svg>
         <span className="absolute left-16 bg-white text-gray-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
           Discutons sur WhatsApp
